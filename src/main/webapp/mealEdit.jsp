@@ -5,14 +5,14 @@
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
-<h2>Meals Edit</h2>
+<h2>Edit meal</h2>
 <hr>
 <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
 <form method="post" action="meals">
     <input type="hidden" name="id" value="${meal.id}">
     <dl>
         <dt>Date:</dt>
-        <dt><input type="datetime-local" value="${meal.dateTime}" name="dateTime"></dt>
+        <dt><input type="datetime-local" value="${meal.dateTime.format(formatter)}" name="dateTime"></dt>
     </dl>
     <dl>
         <dt>Description:</dt>

@@ -22,7 +22,7 @@
     <tbody>
     <c:forEach items="${mealToList}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-        <tr style="color: ${meal.isExcess() ? 'red' : 'green'};">
+        <tr style="color: ${meal.excess ? 'red' : 'green'};">
             <td>${meal.dateTime.format(formatter)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
