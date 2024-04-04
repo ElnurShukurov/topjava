@@ -36,40 +36,37 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
         log.debug("Received GET request with action: {}", action);
 
-        int id;
-        if (action != null) {
-            switch (action) {
-                case "delete":
-                    id = getIdForRequest(request);
-                    log.debug("Deleting meal with id: {}", id);
-                    storage.delete(id);
-                    log.debug("Meal {} deleted successfully", id);
-                    response.sendRedirect("meals");
-                    break;
-                case "create":
-                    log.debug("Preparing to create new meal");
-                    Meal newMeal = new Meal(LocalDateTime.now(), "New Meal", 700);
-                    log.debug("New meal object created: {}", newMeal);
-                    request.setAttribute("formatter", FORMATTER);
-                    request.setAttribute("meal", newMeal);
-                    request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
-                    break;
-                case "update":
-                    id = getIdForRequest(request);
-                    log.debug("Preparing to update meal with id: {}", id);
-                    Meal existingMeal = storage.get(id);
-                    log.debug("Retrieved existing meal for update: {}", existingMeal);
-                    request.setAttribute("formatter", FORMATTER);
-                    request.setAttribute("meal", existingMeal);
-                    request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
-                    break;
-            }
-        } else {
-            log.debug("No action specified, displaying list of meals");
-            request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
-            log.debug("Filtered meals retrieved successfully");
-            request.setAttribute("formatter", FORMATTER);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        switch (action != null ? action : "default") {
+            case "delete":
+                int idToDelete = getIdForRequest(request);
+                log.debug("Deleting meal with id: {}", idToDelete);
+                storage.delete(idToDelete);
+                log.debug("Meal {} deleted successfully", idToDelete);
+                response.sendRedirect("meals");
+                break;
+            case "create":
+                log.debug("Preparing to create new meal");
+                Meal newMeal = new Meal(LocalDateTime.now(), "", 0);
+                log.debug("New meal object created: {}", newMeal);
+                request.setAttribute("formatter", FORMATTER);
+                request.setAttribute("meal", newMeal);
+                request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+                break;
+            case "update":
+                int idToUpdate = getIdForRequest(request);
+                log.debug("Preparing to update meal with id: {}", idToUpdate);
+                Meal existingMeal = storage.get(idToUpdate);
+                log.debug("Retrieved existing meal for update: {}", existingMeal);
+                request.setAttribute("formatter", FORMATTER);
+                request.setAttribute("meal", existingMeal);
+                request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
+                break;
+            default:
+                log.debug("No action specified, displaying list of meals");
+                request.setAttribute("mealToList", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
+                log.debug("Filtered meals retrieved successfully");
+                request.setAttribute("formatter", FORMATTER);
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
     }
 

@@ -1,13 +1,17 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
 <html>
 <head>
-    <title>Edit Meal</title>
+    <title>
+        <c:set var="pageTitle" value="${empty meal.id ? 'Add Meal' : 'Edit Meal'}"/>
+        ${pageTitle}
+    </title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
-<h2>Edit meal</h2>
+<h2>${pageTitle}</h2>
 <hr>
-<jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
 <form method="post" action="meals">
     <input type="hidden" name="id" value="${meal.id}">
     <dl>
