@@ -17,8 +17,8 @@ public class DateTimeUtil {
         return localDate != null ? localDate.plusDays(1).atStartOfDay() : LocalDateTime.MAX;
     }
 
-    public static <T extends Comparable<T>> boolean isBetweenHalfOpen(T ldt, @Nullable T startTime, @Nullable T endTime) {
-        return (startTime == null || ldt.compareTo(startTime) >= 0) && (endTime == null || ldt.compareTo(endTime) < 0);
+    public static <T extends Comparable<T>> boolean isBetweenHalfOpen(T value, @Nullable T start, @Nullable T end) {
+        return (start == null || value.compareTo(start) >= 0) && (end == null || value.compareTo(end) < 0);
     }
 
     public static String toString(LocalDateTime ldt) {
