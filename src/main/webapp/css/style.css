@@ -1,0 +1,18 @@
+.form-row {
+    display: flex;
+    align-items: center;
+}
+
+.space {
+    flex: 1;
+}
+
+dt {
+    display: block;
+}
+
+dd {
+    display: inline-block;
+    width: 150px;
+    margin-left: 0px;
+}

@@ -22,11 +22,11 @@ public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
     public static final int USER_ID = 1;
-    public static final int TEST_USER_ID = 2;
+    public static final int ADMIN_ID = 2;
 
     {
         MealsUtil.meals.forEach(meal -> save(meal, USER_ID));
-        MealsUtil.testMeals.forEach(meal -> save(meal, TEST_USER_ID));
+        MealsUtil.testMeals.forEach(meal -> save(meal, ADMIN_ID));
     }
 
     @Override
