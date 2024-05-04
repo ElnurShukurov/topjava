@@ -42,12 +42,12 @@ public class MealServlet extends HttpServlet {
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
-        if (meal.isNew()) {
+        if (meal.getDescription().isEmpty()) {
             log.info("Create {}", meal);
             mealRestController.create(meal);
         } else {
             log.info("Update {}", meal);
-            mealRestController.update(meal, meal.getId());
+            mealRestController.update(meal, getId(request));
         }
         response.sendRedirect("meals");
     }
@@ -71,12 +71,34 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
-                LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
-                LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
-                LocalDate endDate = LocalDate.parse(request.getParameter("endDate"));
-                LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
+                LocalDate startDate = null;
+                LocalTime startTime = null;
+                LocalDate endDate = null;
+                LocalTime endTime = null;
+
+                String startDateParam = request.getParameter("startDate");
+                if (startDateParam != null && !startDateParam.isEmpty()) {
+                    startDate = LocalDate.parse(startDateParam);
+                }
+
+                String startTimeParam = request.getParameter("startTime");
+                if (startTimeParam != null && !startTimeParam.isEmpty()) {
+                    startTime = LocalTime.parse(startTimeParam);
+                }
+
+                String endDateParam = request.getParameter("endDate");
+                if (endDateParam != null && !endDateParam.isEmpty()) {
+                    endDate = LocalDate.parse(endDateParam);
+                }
+
+                String endTimeParam = request.getParameter("endTime");
+                if (endTimeParam != null && !endTimeParam.isEmpty()) {
+                    endTime = LocalTime.parse(endTimeParam);
+                }
+
                 request.setAttribute("meals", mealRestController.getFiltered(startDate, startTime, endDate, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "all":
             default:
                 log.info("getAll");
