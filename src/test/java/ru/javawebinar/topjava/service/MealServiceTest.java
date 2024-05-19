@@ -29,87 +29,87 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     @Autowired
-    MealService service;
+    private MealService mealService;
 
     @Test
     public void get() {
-        Meal meal = service.get(MEAL1_ID, USER_ID);
-        MealTestData.assertMatch(meal, user_meal1);
+        Meal meal = mealService.get(MEAL1_ID, USER_ID);
+        MealTestData.assertMatch(meal, userMeal1);
     }
 
     @Test
     public void getNotFound() {
-        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, USER_ID));
+        assertThrows(NotFoundException.class, () -> mealService.get(NOT_FOUND, USER_ID));
     }
 
     @Test
     public void getNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
     public void getAll() {
-        List<Meal> all = service.getAll(USER_ID);
+        List<Meal> all = mealService.getAll(USER_ID);
         MealTestData.assertMatch(all, meals);
     }
 
     @Test
     public void getBetweenInclusive() {
 
-        MealTestData.assertMatch(service.getBetweenInclusive(LocalDate.of(2024, 5, 3),
+        MealTestData.assertMatch(mealService.getBetweenInclusive(LocalDate.of(2024, 5, 3),
                 LocalDate.of(2024, 5, 3), USER_ID),
-                user_meal2, user_meal1);
+                userMeal2, userMeal1);
     }
 
     @Test
-    public void getBetweenInclusiveWithEmptyResult() {
-        MealTestData.assertMatch(service.getBetweenInclusive(null, null, USER_ID),
+    public void getBetweenInclusiveWithNullDates() {
+        MealTestData.assertMatch(mealService.getBetweenInclusive(null, null, USER_ID),
                 meals);
     }
 
     @Test
     public void delete() {
-        service.delete(MEAL1_ID, USER_ID);
-        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+        mealService.delete(MEAL1_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> mealService.get(MEAL1_ID, USER_ID));
     }
 
     @Test
     public void deleteNotFound() {
-        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
+        assertThrows(NotFoundException.class, () -> mealService.delete(NOT_FOUND, USER_ID));
     }
 
     @Test
     public void deleteNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> mealService.delete(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
     public void update() {
         Meal updated = MealTestData.getUpdated();
-        service.update(updated, USER_ID);
-        MealTestData.assertMatch(service.get(MEAL1_ID, USER_ID), MealTestData.getUpdated());
+        mealService.update(updated, USER_ID);
+        MealTestData.assertMatch(mealService.get(MEAL1_ID, USER_ID), MealTestData.getUpdated());
     }
 
     @Test
     public void updateNotOwn() {
-        assertThrows(NotFoundException.class, () -> service.update(admin_meal1, USER_ID));
-        MealTestData.assertMatch(service.get(MEAL1_ID, USER_ID), user_meal1);
+        assertThrows(NotFoundException.class, () -> mealService.update(adminMeal1, USER_ID));
+        MealTestData.assertMatch(mealService.get(MEAL1_ID, USER_ID), userMeal1);
     }
 
 
     @Test
     public void create() {
-        Meal created = service.create(MealTestData.getNew(), USER_ID);
+        Meal created = mealService.create(MealTestData.getNew(), USER_ID);
         Integer newId = created.getId();
         Meal newMeal = MealTestData.getNew();
         newMeal.setId(newId);
         MealTestData.assertMatch(created, newMeal);
-        MealTestData.assertMatch(service.get(newId, USER_ID), newMeal);
+        MealTestData.assertMatch(mealService.get(newId, USER_ID), newMeal);
     }
 
     @Test
     public void duplicateDateTimeCreate() {
         assertThrows(DataAccessException.class, () ->
-                service.create(new Meal(null, user_meal1.getDateTime(), "Duplicate", 100), USER_ID));
+                mealService.create(new Meal(null, userMeal1.getDateTime(), "Duplicate", 100), USER_ID));
     }
 }
