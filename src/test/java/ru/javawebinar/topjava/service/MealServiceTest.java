@@ -1,6 +1,10 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,6 +17,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -29,6 +35,42 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    private long startTime;
+    private static final Map<String, Long> testExecutionTimes = new HashMap<>();
+
+    @Rule
+    public TestWatcher watcher = new TestWatcher() {
+        @Override
+        protected void succeeded(Description description) {
+            System.out.println(description.getDisplayName() + " succeeded");
+        }
+
+        @Override
+        protected void failed(Throwable e, Description description) {
+            System.out.println(description.getDisplayName() + " failed with " + e.getClass().getSimpleName());
+        }
+
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+        }
+
+        @Override
+        protected void finished(Description description) {
+            long executionTime = System.currentTimeMillis() - startTime;
+            String testName = description.getMethodName();
+            testExecutionTimes.put(testName, executionTime);
+            System.out.println("Test " + testName + " executed in " + executionTime + " ms");
+        }
+    };
+
+    @AfterClass
+    public static void printTestExecutionTimes() {
+        System.out.println("\nTest execution times summary:");
+        testExecutionTimes.forEach((testName, executionTime) ->
+                System.out.println("Test " + testName + " executed in " + executionTime + " ms"));
+    }
 
     @Test
     public void delete() {
