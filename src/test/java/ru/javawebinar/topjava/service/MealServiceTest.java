@@ -3,9 +3,11 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,8 +19,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -32,44 +36,30 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
     @Autowired
     private MealService service;
 
-    private long startTime;
-    private static final Map<String, Long> testExecutionTimes = new HashMap<>();
+    private static final Map<String, Long> testExecutionTimes = new LinkedHashMap<>();
 
     @Rule
-    public TestWatcher watcher = new TestWatcher() {
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(Description description) {
-            System.out.println(description.getDisplayName() + " succeeded");
-        }
-
-        @Override
-        protected void failed(Throwable e, Description description) {
-            System.out.println(description.getDisplayName() + " failed with " + e.getClass().getSimpleName());
-        }
-
-        @Override
-        protected void starting(Description description) {
-            startTime = System.currentTimeMillis();
-        }
-
-        @Override
-        protected void finished(Description description) {
-            long executionTime = System.currentTimeMillis() - startTime;
+        protected void finished(long nanos, Description description) {
             String testName = description.getMethodName();
-            testExecutionTimes.put(testName, executionTime);
-            System.out.println("Test " + testName + " executed in " + executionTime + " ms");
+            long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
+            testExecutionTimes.put(testName, millis);
+            log.info(String.format("Test %s executed in %d ms", testName, millis));
         }
     };
 
     @AfterClass
     public static void printTestExecutionTimes() {
-        System.out.println("\nTest execution times summary:");
-        testExecutionTimes.forEach((testName, executionTime) ->
-                System.out.println("Test " + testName + " executed in " + executionTime + " ms"));
+        log.info("\nTest execution times summary:\n" +
+                testExecutionTimes.entrySet().stream()
+                        .map(entry -> String.format("%-30s %d ms", entry.getKey(), entry.getValue()))
+                        .collect(Collectors.joining("\n")));
     }
 
     @Test
