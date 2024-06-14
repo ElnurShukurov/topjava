@@ -19,6 +19,10 @@ public class DataJpaMealRepository implements MealRepository {
         this.crudUserRepository = crudUserRepository;
     }
 
+    public Meal getWithUser(int id, int userId) {
+        return crudMealRepository.getWithUser(id, userId);
+    }
+
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {

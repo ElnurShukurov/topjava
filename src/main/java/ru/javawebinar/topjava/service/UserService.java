@@ -21,6 +21,11 @@ public class UserService {
         this.repository = repository;
     }
 
+
+    public User getWithMeals(int id) {
+        return checkNotFoundWithId(repository.getWithMeals(id), id);
+    }
+
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
