@@ -21,7 +21,6 @@ public class UserService {
         this.repository = repository;
     }
 
-
     public User getWithMeals(int id) {
         return checkNotFoundWithId(repository.getWithMeals(id), id);
     }
