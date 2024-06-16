@@ -38,9 +38,9 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
 
     @Repository
     @Profile(Profiles.HSQL_DB)
-    public class JdbcMealRepositoryHsql extends JdbcMealRepository {
+    public static class HsqlJdbcMealRepository extends JdbcMealRepository<Timestamp> {
 
-        public JdbcMealRepositoryHsql(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        public HsqlJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
             super(jdbcTemplate, namedParameterJdbcTemplate);
         }
 
@@ -52,9 +52,9 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
 
     @Repository
     @Profile(Profiles.POSTGRES_DB)
-    public static class JdbcMealRepositoryPostgres extends JdbcMealRepository {
+    public static class PostgresJdbcMealRepository extends JdbcMealRepository<LocalDateTime> {
 
-        public JdbcMealRepositoryPostgres(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        public PostgresJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
             super(jdbcTemplate, namedParameterJdbcTemplate);
         }
 
@@ -79,8 +79,7 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
             Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
         } else {
-            if (namedParameterJdbcTemplate.update("" +
-                    "UPDATE meal " +
+            if (namedParameterJdbcTemplate.update("UPDATE meal " +
                     "   SET description=:description, calories=:calories, date_time=:date_time " +
                     " WHERE id=:id AND user_id=:user_id", map) == 0) {
                 return null;
