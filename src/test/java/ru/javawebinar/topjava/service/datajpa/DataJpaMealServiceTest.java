@@ -22,12 +22,12 @@ public class DataJpaMealServiceTest extends AbstractMealServiceTest {
     }
 
     @Test
-    public void getWithUserNonExistentMeal() {
+    public void getWithUserNotFound() {
         assertThrows(NotFoundException.class, () -> service.getWithUser(NOT_FOUND, USER_ID));
     }
 
     @Test
-    public void getWithUserDifferentUserMeal() {
+    public void getWithUserNotOwn() {
         assertThrows(NotFoundException.class, () -> service.getWithUser(ADMIN_MEAL_ID, USER_ID));
     }
 }

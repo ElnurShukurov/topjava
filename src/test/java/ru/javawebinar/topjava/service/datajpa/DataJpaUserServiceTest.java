@@ -24,14 +24,14 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     }
 
     @Test
-    public void getWithMealsNonExistentUser() {
+    public void getWithMealsNotFound() {
         assertThrows(NotFoundException.class, () -> service.getWithMeals(NOT_FOUND));
     }
 
     @Test
-    public void getWithMealsUserWithNoMeals() {
+    public void getWithMealsNoMeals() {
         User guestUser = service.getWithMeals(GUEST_ID);
-        USER_MATCHER.assertMatch(guestUser, guestUser);
+        USER_MATCHER.assertMatch(guestUser, guest);
         assertTrue(guestUser.getMeals().isEmpty());
     }
 }
