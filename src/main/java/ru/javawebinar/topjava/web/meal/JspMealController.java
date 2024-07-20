@@ -5,13 +5,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import ru.javawebinar.topjava.model.Meal;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
@@ -24,18 +24,18 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         super.delete(getMealId(request));
-        return "redirect:meals";
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    public String mealList (Model model) {
-        model.addAttribute("mealList", super.getAll());
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/create")
     public String create(Model model) {
-        model.addAttribute("meal", new Meal());
+        model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
+        return "mealForm";
+    }
+
+    @GetMapping("/update")
+    public String update(HttpServletRequest request, Model model) {
+        model.addAttribute("meal", super.get(getMealId(request)));
         return "mealForm";
     }
 
@@ -52,7 +52,7 @@ public class JspMealController extends AbstractMealController {
         } else {
             super.update(meal, getMealId(request));
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/filter")
