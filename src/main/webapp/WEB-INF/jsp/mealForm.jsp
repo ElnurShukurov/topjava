@@ -12,6 +12,10 @@
     <h3><spring:message code="${meal.isNew() ? 'meal.add' : 'meal.edit'}"/></h3>
     <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
+        <input type="hidden" name="startDate" value="${param.startDate}">
+        <input type="hidden" name="endDate" value="${param.endDate}">
+        <input type="hidden" name="startTime" value="${param.startTime}">
+        <input type="hidden" name="endTime" value="${param.endTime}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>
             <dd><input type="datetime-local" value="${meal.dateTime}" name="dateTime" required></dd>

@@ -4,6 +4,7 @@
     <!-- To enable JMX Management -->
     <jmxConfigurator/>
 
+    <!-- File appender for logging to a file -->
     <appender name="file" class="ch.qos.logback.core.FileAppender">
         <file>${TOPJAVA_ROOT}/log/topjava.log</file>
 
@@ -13,6 +14,7 @@
         </encoder>
     </appender>
 
+    <!-- Console appender for logging to the console -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
@@ -20,9 +22,15 @@
         </encoder>
     </appender>
 
+    <!-- Loggers for specific packages -->
     <logger name="ru.javawebinar.topjava" level="debug"/>
     <logger name="org.springframework.web.servlet" level="debug"/>
 
+    <!-- Add debug level logging for JDBC and transaction management -->
+    <logger name="org.springframework.jdbc" level="debug"/>
+    <logger name="org.springframework.transaction" level="debug"/>
+
+    <!-- Root logger configuration -->
     <root level="info">
         <appender-ref ref="file"/>
         <appender-ref ref="console"/>

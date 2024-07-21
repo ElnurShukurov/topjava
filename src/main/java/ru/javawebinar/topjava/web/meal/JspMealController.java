@@ -24,18 +24,20 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
         super.delete(getMealId(request));
-        return "redirect:/meals";
+        return buildRedirectURL(request);
     }
 
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(Model model, HttpServletRequest request) {
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
+        addFilterParamsToModel(model, request);
         return "mealForm";
     }
 
     @GetMapping("/update")
     public String update(HttpServletRequest request, Model model) {
         model.addAttribute("meal", super.get(getMealId(request)));
+        addFilterParamsToModel(model, request);
         return "mealForm";
     }
 
@@ -52,7 +54,7 @@ public class JspMealController extends AbstractMealController {
         } else {
             super.update(meal, getMealId(request));
         }
-        return "redirect:/meals";
+        return buildRedirectURL(request);
     }
 
     @GetMapping("/filter")
@@ -63,11 +65,41 @@ public class JspMealController extends AbstractMealController {
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
 
         model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
+        addFilterParamsToModel(model, request);
         return "meals";
     }
 
-    private Integer getMealId(HttpServletRequest request) {
+    private int getMealId(HttpServletRequest request) {
         String idParam = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(idParam);
+    }
+
+    private void addFilterParamsToModel(Model model, HttpServletRequest request) {
+        model.addAttribute("startDate", request.getParameter("startDate"));
+        model.addAttribute("endDate", request.getParameter("endDate"));
+        model.addAttribute("startTime", request.getParameter("startTime"));
+        model.addAttribute("endTime", request.getParameter("endTime"));
+    }
+
+    private String buildRedirectURL(HttpServletRequest request) {
+        StringBuilder redirectURL = new StringBuilder("redirect:/meals");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
+
+        if ((startDate != null && !startDate.isEmpty()) ||
+                (endDate != null && !endDate.isEmpty()) ||
+                (startTime != null && !startTime.isEmpty()) ||
+                (endTime != null && !endTime.isEmpty())) {
+            redirectURL.append("/filter?");
+            if (startDate != null) redirectURL.append("startDate=").append(startDate).append("&");
+            if (endDate != null) redirectURL.append("endDate=").append(endDate).append("&");
+            if (startTime != null) redirectURL.append("startTime=").append(startTime).append("&");
+            if (endTime != null) redirectURL.append("endTime=").append(endTime).append("&");
+            redirectURL.deleteCharAt(redirectURL.length() - 1);
+        }
+
+        return redirectURL.toString();
     }
 }

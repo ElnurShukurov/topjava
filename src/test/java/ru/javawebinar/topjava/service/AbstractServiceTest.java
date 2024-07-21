@@ -39,7 +39,7 @@ public abstract class AbstractServiceTest {
     @Autowired
     private Environment environment;
 
-    public boolean isJpaProfileActive() {
+    protected boolean isJpaProfileActive() {
         return Arrays.stream(environment.getActiveProfiles())
                 .anyMatch(profile -> profile.equalsIgnoreCase(Profiles.JPA) || profile.equalsIgnoreCase(Profiles.DATAJPA));
     }
