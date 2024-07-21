@@ -10,7 +10,7 @@
 <section>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <h3><spring:message code="${meal.isNew() ? 'meal.add' : 'meal.edit'}"/></h3>
-    <form method="post" action="${pageContext.request.contextPath}/meals">
+    <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <input type="hidden" name="startDate" value="${param.startDate}">
         <input type="hidden" name="endDate" value="${param.endDate}">

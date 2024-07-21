@@ -5,5 +5,5 @@
 <header>
     <a href="<c:url value='/meals' />"><spring:message code="app.title"/></a> | <a
         href="<c:url value='/users' />"><spring:message code="user.title"/></a> | <a
-        href="${pageContext.request.contextPath}"><spring:message code="app.home"/></a>
+        href=""><spring:message code="app.home"/></a>
 </header>
