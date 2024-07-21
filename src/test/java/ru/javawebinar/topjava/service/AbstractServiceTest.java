@@ -16,8 +16,6 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
@@ -40,8 +38,7 @@ public abstract class AbstractServiceTest {
     private Environment environment;
 
     protected boolean isJpaProfileActive() {
-        return Arrays.stream(environment.getActiveProfiles())
-                .anyMatch(profile -> profile.equalsIgnoreCase(Profiles.JPA) || profile.equalsIgnoreCase(Profiles.DATAJPA));
+        return environment.matchesProfiles(Profiles.JPA, Profiles.DATAJPA);
     }
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
