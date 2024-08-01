@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,6 +55,13 @@ public class MatcherFactory {
 
         public ResultMatcher contentJson(Iterable<T> expected) {
             return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+        }
+
+        public ResultMatcher contentJsonIgnoringOrder(T... expected) {
+            return result -> {
+                List<T> actualList = JsonUtil.readValues(getContent(result), clazz);
+                assertThat(actualList).containsExactlyInAnyOrderElementsOf(Arrays.asList(expected));
+            };
         }
 
         public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
