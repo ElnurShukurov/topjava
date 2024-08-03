@@ -9,7 +9,6 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -22,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 
 public class MealRestControllerTest extends AbstractControllerTest {
@@ -37,7 +35,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect((MEAL_MATCHER.contentJson(meal1)));
+                .andExpect(MEAL_MATCHER.contentJson(meal1));
     }
 
     @Test
@@ -50,7 +48,15 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        List<MealTo> expectedMeals = MealsUtil.getTos(meals, DEFAULT_CALORIES_PER_DAY);
+        List<MealTo> expectedMeals = List.of(
+                createTo(meal7, true),
+                createTo(meal6, true),
+                createTo(meal5, true),
+                createTo(meal4, true),
+                createTo(meal3, false),
+                createTo(meal2, false),
+                createTo(meal1, false)
+        );
 
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
@@ -86,12 +92,17 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "/filter")
-                .param("startDateTime", "2020-01-30T07:00:00")
-                .param("endDateTime", "2020-01-30T23:59:59"))
+        List<MealTo> expectedMeals = List.of(
+                createTo(meal5, true),   // 2020-01-31 10:00
+                createTo(meal1, false)   // 2020-01-30 10:00
+        );
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDateTime", "2020-01-30T07:00")
+                .param("endDateTime", "2020-01-31T12:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJsonIgnoringOrder(createTo(meal1, false),
-                        createTo(meal2, false), createTo(meal3, false)));
+                .andExpect(MEAL_TO_MATCHER.contentJsonGetBetween(expectedMeals));
+
     }
 }

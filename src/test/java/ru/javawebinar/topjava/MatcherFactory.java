@@ -6,10 +6,10 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Factory for creating test matchers.
@@ -20,6 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MatcherFactory {
     public static <T> Matcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
         return new Matcher<>(clazz, fieldsToIgnore);
+    }
+
+    public static <T> Matcher<T> usingEqualsComparator(Class<T> clazz) {
+        return new Matcher<>(clazz);
     }
 
     public static class Matcher<T> {
@@ -44,6 +48,13 @@ public class MatcherFactory {
             assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
+        private static <T> void assertMatchGetBetween(List<T> actual, List<T> expected) {
+            assertEquals(expected.size(), actual.size(), "List sizes are not equal");
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i), actual.get(i), "Element at index " + i + " does not match");
+            }
+        }
+
         public ResultMatcher contentJson(T expected) {
             return result -> assertMatch(JsonUtil.readValue(getContent(result), clazz), expected);
         }
@@ -57,10 +68,11 @@ public class MatcherFactory {
             return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
         }
 
-        public ResultMatcher contentJsonIgnoringOrder(T... expected) {
+        public ResultMatcher contentJsonGetBetween(Iterable<T> expected) {
             return result -> {
                 List<T> actualList = JsonUtil.readValues(getContent(result), clazz);
-                assertThat(actualList).containsExactlyInAnyOrderElementsOf(Arrays.asList(expected));
+                List<T> expectedList = (List<T>) expected;
+                assertMatchGetBetween(actualList, expectedList);
             };
         }
 

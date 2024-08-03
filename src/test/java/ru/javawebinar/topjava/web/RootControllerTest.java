@@ -10,10 +10,9 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.javawebinar.topjava.MealTestData.meals;
+import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
-import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.util.MealsUtil.createTo;
 
 class RootControllerTest extends AbstractControllerTest {
 
@@ -36,7 +35,15 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void getMeals() throws Exception {
-        List<MealTo> expectedMeals = getTos(meals, DEFAULT_CALORIES_PER_DAY);
+        List<MealTo> expectedMeals = List.of(
+                createTo(meal7, true),
+                createTo(meal6, true),
+                createTo(meal5, true),
+                createTo(meal4, true),
+                createTo(meal3, false),
+                createTo(meal2, false),
+                createTo(meal1, false)
+        );
 
         perform(get("/meals"))
                 .andDo(print())
