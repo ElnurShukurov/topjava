@@ -102,7 +102,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .param("endDateTime", "2020-01-31T12:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJsonGetBetween(expectedMeals));
+                .andExpect(MEAL_TO_MATCHER.contentJson(expectedMeals));
 
     }
 }
