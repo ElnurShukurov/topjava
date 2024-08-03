@@ -52,8 +52,10 @@ public class MatcherFactory {
             List<T> expectedList = List.copyOf((Collection<T>) expected);
 
             assertThat(actualList).hasSameSizeAs(expectedList);
-            for (T e : expectedList) {
-                assertThat(actualList).contains(e);
+            for (int i = 0; i < expectedList.size(); i++) {
+                T expectedElement = expectedList.get(i);
+                T actualElement = actualList.get(i);
+                comparator.accept(actualElement, expectedElement);
             }
         }
 
