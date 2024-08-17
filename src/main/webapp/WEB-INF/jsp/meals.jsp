@@ -14,6 +14,37 @@
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
+        <div class="card border-dark">
+            <div class="card-body pb-0">
+                <form id="filter">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="startDate"><spring:message code="meal.startDate"/></label>
+                            <input class="form-control" type="date" name="startDate" id="startDate">
+                        </div>
+                        <div class="col-2">
+                            <label for="endDate"><spring:message code="meal.endDate"/></label>
+                            <input class="form-control" type="date" name="endDate" id="endDate">
+                        </div>
+                        <div class="offset-2 col-3">
+                            <label for="startTime"><spring:message code="meal.startTime"/></label>
+                            <input class="form-control" type="time" name="startTime" id="startTime">
+                        </div>
+                        <div class="col-3">
+                            <label for="endTime"><spring:message code="meal.endTime"/></label>
+                            <input class="form-control" type="time" name="endTime" id="endTime">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button class="btn btn-primary" onclick="ctx.updateTable()">
+                    <span class="fa fa-filter"></span>
+                    <spring:message code="meal.filter"/>
+                </button>
+            </div>
+        </div>
+        <br/>
         <button class="btn btn-primary" onclick="add()">
             <span class="fa fa-plus"></span>
             <spring:message code="common.add"/>
@@ -30,12 +61,12 @@
             </thead>
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr id="${meal.id}" data-meal-excess="${meal.excess}">
+                <tr data-meal-excess="${meal.excess}">
                     <td>${fn:formatDateTime(meal.dateTime)}</td>
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
+                    <td><a onclick="deleteRow(${meal.id})"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
@@ -54,22 +85,21 @@
                     <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
+                        <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
+                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
+                               + placeholder="<spring:message code="meal.dateTime"/>">
+                    </div>
+
+                    <div class="form-group">
                         <label for="description" class="col-form-label"><spring:message
                                 code="meal.description"/></label>
                         <input type="text" class="form-control" id="description" name="description"
-                               placeholder="<spring:message code="meal.description"/>">
+                               + placeholder="<spring:message code="meal.description"/>">
                     </div>
 
                     <div class="form-group">
                         <label for="calories" class="col-form-label"><spring:message code="meal.calories"/></label>
-                        <input type="number" class="form-control" id="calories" name="calories"
-                               placeholder="<spring:message code="meal.calories"/>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
-                               required>
+                        <input type="number" class="form-control" id="calories" name="calories" placeholder="1000">
                     </div>
                 </form>
             </div>
