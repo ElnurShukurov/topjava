@@ -50,3 +50,24 @@ $(function () {
     }
 )
 ;
+
+function enable(checkbox, userId) {
+    const enabled = checkbox.checked;
+    $.ajax({
+        url: userAjaxUrl + userId,
+        type: 'POST',
+        data: {enabled: enabled}
+    }).done(function () {
+        $(checkbox).prop('checked', enabled);
+        const row = $(checkbox).closest('tr');
+        row.attr('data-user-enabled', enabled);
+        if (enabled) {
+            row.removeClass('disabled-user');
+        } else {
+            row.addClass('disabled-user');
+        }
+        successNoty(enabled ? "Enabled" : "Disabled");
+    }).fail(function () {
+        alert("Failed to update user status");
+    });
+}

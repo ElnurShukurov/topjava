@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,7 +65,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void createWithLocation() throws Exception {
         User newUser = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions action = perform(post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newUser)))
                 .andExpect(status().isCreated());
@@ -92,5 +93,29 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(admin));
+    }
+
+    @Test
+    void disable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                .param("enabled", "false")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        User disabledUser = user;
+        disabledUser.setEnabled(false);
+        USER_MATCHER.assertMatch(userService.get(USER_ID), disabledUser);
+    }
+
+    @Test
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                .param("enabled", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        User enabledAdmin = admin;
+        enabledAdmin.setEnabled(true);
+        USER_MATCHER.assertMatch(userService.get(ADMIN_ID), enabledAdmin);
     }
 }
