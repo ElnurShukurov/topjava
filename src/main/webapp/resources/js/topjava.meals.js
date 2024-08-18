@@ -43,3 +43,8 @@ $(function () {
             ],
         }));
 });
+
+function resetFilter() {
+    $('#filter').find('input[type=date], input[type=time]').val('');
+    ctx.updateTable();
+}

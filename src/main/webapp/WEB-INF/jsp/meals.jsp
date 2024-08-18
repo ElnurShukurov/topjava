@@ -42,6 +42,10 @@
                     <span class="fa fa-filter"></span>
                     <spring:message code="meal.filter"/>
                 </button>
+                <button class="btn btn-danger" onclick="resetFilter()">
+                    <span class="fa fa-times"></span>
+                    <spring:message code="common.cancel"/>
+                </button>
             </div>
         </div>
         <br/>
