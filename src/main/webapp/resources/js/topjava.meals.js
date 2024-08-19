@@ -45,6 +45,6 @@ $(function () {
 });
 
 function resetFilter() {
-    $('#filter').find('input[type=date], input[type=time]').val('');
+    document.getElementById('filter').reset();
     ctx.updateTable();
 }

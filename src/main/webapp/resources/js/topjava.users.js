@@ -58,16 +58,11 @@ function enable(checkbox, userId) {
         type: 'POST',
         data: {enabled: enabled}
     }).done(function () {
-        $(checkbox).prop('checked', enabled);
         const row = $(checkbox).closest('tr');
         row.attr('data-user-enabled', enabled);
-        if (enabled) {
-            row.removeClass('disabled-user');
-        } else {
-            row.addClass('disabled-user');
-        }
         successNoty(enabled ? "Enabled" : "Disabled");
     }).fail(function () {
+        checkbox.checked = !enabled;
         alert("Failed to update user status");
     });
 }

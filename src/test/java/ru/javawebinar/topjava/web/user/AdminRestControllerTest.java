@@ -102,7 +102,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        User disabledUser = user;
+        User disabledUser = new User(user);
         disabledUser.setEnabled(false);
         USER_MATCHER.assertMatch(userService.get(USER_ID), disabledUser);
     }
@@ -114,7 +114,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        User enabledAdmin = admin;
+        User enabledAdmin = new User(admin);
         enabledAdmin.setEnabled(true);
         USER_MATCHER.assertMatch(userService.get(ADMIN_ID), enabledAdmin);
     }
